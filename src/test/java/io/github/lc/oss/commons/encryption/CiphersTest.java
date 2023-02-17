@@ -1,4 +1,4 @@
-package com.github.lc.oss.commons.encryption;
+package io.github.lc.oss.commons.encryption;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.github.lc.oss.commons.testing.AbstractTest;
+import io.github.lc.oss.commons.testing.AbstractTest;
 
 public class CiphersTest extends AbstractTest {
     @Test

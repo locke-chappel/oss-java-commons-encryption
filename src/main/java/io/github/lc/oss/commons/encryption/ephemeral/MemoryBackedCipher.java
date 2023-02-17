@@ -1,8 +1,8 @@
-package com.github.lc.oss.commons.encryption.ephemeral;
+package io.github.lc.oss.commons.encryption.ephemeral;
 
 import java.security.SecureRandom;
 
-import com.github.lc.oss.commons.encoding.Encodings;
+import io.github.lc.oss.commons.encoding.Encodings;
 
 public class MemoryBackedCipher extends AbstractEphemeralCipher {
     private final char[] key;

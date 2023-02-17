@@ -1,7 +1,7 @@
-package com.github.lc.oss.commons.encryption.ephemeral;
+package io.github.lc.oss.commons.encryption.ephemeral;
 
-import com.github.lc.oss.commons.encoding.Encodings;
-import com.github.lc.oss.commons.util.IoTools;
+import io.github.lc.oss.commons.encoding.Encodings;
+import io.github.lc.oss.commons.util.IoTools;
 
 public class FileBackedCipher extends AbstractEphemeralCipher {
     private final char[] key;

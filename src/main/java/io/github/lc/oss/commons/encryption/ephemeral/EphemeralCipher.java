@@ -1,8 +1,8 @@
-package com.github.lc.oss.commons.encryption.ephemeral;
+package io.github.lc.oss.commons.encryption.ephemeral;
 
 import java.nio.charset.StandardCharsets;
 
-import com.github.lc.oss.commons.encryption.Ciphers;
+import io.github.lc.oss.commons.encryption.Ciphers;
 
 public interface EphemeralCipher {
     String encrypt(byte[] data, Ciphers cipher);

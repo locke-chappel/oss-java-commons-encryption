@@ -1,4 +1,4 @@
-package com.github.lc.oss.commons.encryption;
+package io.github.lc.oss.commons.encryption;
 
 class AES256 extends AbstractAES {
     @Override

@@ -1,4 +1,4 @@
-package com.github.lc.oss.commons.encryption;
+package io.github.lc.oss.commons.encryption;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
@@ -13,7 +13,7 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.github.lc.oss.commons.encoding.Encodings;
+import io.github.lc.oss.commons.encoding.Encodings;
 
 public abstract class AbstractAES implements Cipher {
     private static final String DELIMITER = "$";

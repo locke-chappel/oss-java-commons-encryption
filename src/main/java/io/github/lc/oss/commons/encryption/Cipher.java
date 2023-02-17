@@ -1,4 +1,4 @@
-package com.github.lc.oss.commons.encryption;
+package io.github.lc.oss.commons.encryption;
 
 interface Cipher {
     String encrypt(String data, char[] password);

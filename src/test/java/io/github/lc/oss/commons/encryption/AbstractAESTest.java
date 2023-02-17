@@ -1,9 +1,9 @@
-package com.github.lc.oss.commons.encryption;
+package io.github.lc.oss.commons.encryption;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.github.lc.oss.commons.testing.AbstractTest;
+import io.github.lc.oss.commons.testing.AbstractTest;
 
 public class AbstractAESTest extends AbstractTest {
     private static class BadPasswordHashAES extends AbstractAES {

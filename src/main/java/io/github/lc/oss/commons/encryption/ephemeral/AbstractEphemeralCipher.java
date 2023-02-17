@@ -1,6 +1,6 @@
-package com.github.lc.oss.commons.encryption.ephemeral;
+package io.github.lc.oss.commons.encryption.ephemeral;
 
-import com.github.lc.oss.commons.encryption.Ciphers;
+import io.github.lc.oss.commons.encryption.Ciphers;
 
 public abstract class AbstractEphemeralCipher implements EphemeralCipher {
     protected abstract char[] getKey();

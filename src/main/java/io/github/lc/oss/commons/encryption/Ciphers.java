@@ -1,8 +1,8 @@
-package com.github.lc.oss.commons.encryption;
+package io.github.lc.oss.commons.encryption;
 
 import java.util.Set;
 
-import com.github.lc.oss.commons.util.TypedEnumCache;
+import io.github.lc.oss.commons.util.TypedEnumCache;
 
 public enum Ciphers implements Cipher {
     AES128(new AES128()),

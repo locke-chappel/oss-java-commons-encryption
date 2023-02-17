@@ -1,4 +1,4 @@
-package com.github.lc.oss.commons.encryption.ephemeral;
+package io.github.lc.oss.commons.encryption.ephemeral;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -9,8 +9,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.github.lc.oss.commons.encryption.Ciphers;
-import com.github.lc.oss.commons.util.IoTools;
+import io.github.lc.oss.commons.encryption.Ciphers;
+import io.github.lc.oss.commons.util.IoTools;
 
 public class FileBackedCipherTest {
     private static String tempDir = null;

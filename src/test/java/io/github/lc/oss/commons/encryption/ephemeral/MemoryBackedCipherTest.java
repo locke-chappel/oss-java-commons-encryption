@@ -1,4 +1,4 @@
-package com.github.lc.oss.commons.encryption.ephemeral;
+package io.github.lc.oss.commons.encryption.ephemeral;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.github.lc.oss.commons.encryption.Ciphers;
+import io.github.lc.oss.commons.encryption.Ciphers;
 
 public class MemoryBackedCipherTest {
     @Test

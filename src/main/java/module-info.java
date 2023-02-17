@@ -1,7 +1,7 @@
-module com.github.lc.oss.commons.encryption {
-    requires com.github.lc.oss.commons.encoding;
-    requires com.github.lc.oss.commons.util;
+module io.github.lc.oss.commons.encryption {
+    requires io.github.lc.oss.commons.encoding;
+    requires io.github.lc.oss.commons.util;
 
-    exports com.github.lc.oss.commons.encryption;
-    exports com.github.lc.oss.commons.encryption.ephemeral;
+    exports io.github.lc.oss.commons.encryption;
+    exports io.github.lc.oss.commons.encryption.ephemeral;
 }
