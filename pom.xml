@@ -12,7 +12,7 @@
     <version>1.0.10</version>
     <name>${project.artifactId}</name>
     <description>A simplified encryption library implementing common, modern algorithms</description>
-    <url>https://github.com/locke-chappel/oss-commons-encryption</url>
+    <url>https://github.com/locke-chappel/oss-java-commons-encryption</url>
 
     <licenses>
         <license>
