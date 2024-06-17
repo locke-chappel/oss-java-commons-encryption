@@ -41,7 +41,7 @@ public class MemoryBackedCipherTest {
             cipher2.decrypt(encrypted, Ciphers.AES128);
             Assertions.fail("Expected exception");
         } catch (RuntimeException ex) {
-            Assertions.assertEquals("javax.crypto.AEADBadTagException: Tag mismatch!", ex.getMessage());
+            Assertions.assertEquals("javax.crypto.AEADBadTagException: Tag mismatch", ex.getMessage());
         }
     }
 }
