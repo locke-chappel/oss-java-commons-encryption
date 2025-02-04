@@ -3,6 +3,7 @@ package io.github.lc.oss.commons.encryption.ephemeral;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.github.lc.oss.commons.encryption.Cipher;
 import io.github.lc.oss.commons.encryption.Ciphers;
 import io.github.lc.oss.commons.testing.AbstractTest;
 
@@ -12,19 +13,19 @@ public class EphemeralCipherTest extends AbstractTest {
         EphemeralCipher ec = new EphemeralCipher() {
 
             @Override
-            public String encrypt(byte[] data, Ciphers cipher) {
+            public String encrypt(byte[] data, Cipher cipher) {
                 Assertions.assertSame(Ciphers.AES256, cipher);
                 return null;
             }
 
             @Override
-            public String decryptString(String data, Ciphers cipher) {
+            public String decryptString(String data, Cipher cipher) {
                 Assertions.assertSame(Ciphers.AES256, cipher);
                 return null;
             }
 
             @Override
-            public byte[] decrypt(String data, Ciphers cipher) {
+            public byte[] decrypt(String data, Cipher cipher) {
                 Assertions.assertSame(Ciphers.AES256, cipher);
                 return null;
             }

@@ -1,6 +1,6 @@
 package io.github.lc.oss.commons.encryption;
 
-interface Cipher {
+public interface Cipher {
     String encrypt(String data, char[] password);
 
     String encrypt(String data, char[] password, String salt);

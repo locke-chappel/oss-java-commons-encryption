@@ -5,7 +5,7 @@ import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 
 import io.github.lc.oss.commons.encoding.Encodings;
-import io.github.lc.oss.commons.encryption.Ciphers;
+import io.github.lc.oss.commons.encryption.Cipher;
 
 /**
  * A memory back temporary cipher manager.<br/>
@@ -89,7 +89,7 @@ public class RotatingMemoryBackedCipher implements EphemeralCipher {
     }
 
     @Override
-    public String encrypt(byte[] data, Ciphers cipher) {
+    public String encrypt(byte[] data, Cipher cipher) {
         Key current = this.keys[this.keyIndex];
         if (current == null) {
             synchronized (this.keys) {
@@ -120,7 +120,7 @@ public class RotatingMemoryBackedCipher implements EphemeralCipher {
     }
 
     @Override
-    public byte[] decrypt(String data, Ciphers cipher) {
+    public byte[] decrypt(String data, Cipher cipher) {
         int id = this.fromBase64(data.substring(0, data.indexOf(DELIMITER)));
         String encrypted = data.substring(data.indexOf(DELIMITER) + 1);
 
@@ -148,7 +148,7 @@ public class RotatingMemoryBackedCipher implements EphemeralCipher {
     }
 
     @Override
-    public String decryptString(String data, Ciphers cipher) {
+    public String decryptString(String data, Cipher cipher) {
         return new String(this.decrypt(data, cipher), StandardCharsets.UTF_8);
     }
 

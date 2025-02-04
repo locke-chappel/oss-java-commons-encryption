@@ -2,6 +2,7 @@ package io.github.lc.oss.commons.encryption.ephemeral;
 
 import java.nio.charset.StandardCharsets;
 
+import io.github.lc.oss.commons.encryption.Cipher;
 import io.github.lc.oss.commons.encryption.Ciphers;
 
 public interface EphemeralCipher {
@@ -9,13 +10,13 @@ public interface EphemeralCipher {
         return this.encrypt(data, Ciphers.AES256);
     }
 
-    String encrypt(byte[] data, Ciphers cipher);
+    String encrypt(byte[] data, Cipher cipher);
 
     default String encrypt(String data) {
         return this.encrypt(data, Ciphers.AES256);
     }
 
-    default String encrypt(String data, Ciphers cipher) {
+    default String encrypt(String data, Cipher cipher) {
         return this.encrypt(data.getBytes(StandardCharsets.UTF_8), cipher);
     }
 
@@ -23,11 +24,11 @@ public interface EphemeralCipher {
         return this.decrypt(data, Ciphers.AES256);
     }
 
-    byte[] decrypt(String data, Ciphers cipher);
+    byte[] decrypt(String data, Cipher cipher);
 
     default String decryptString(String data) {
         return this.decryptString(data, Ciphers.AES256);
     }
 
-    String decryptString(String data, Ciphers cipher);
+    String decryptString(String data, Cipher cipher);
 }
