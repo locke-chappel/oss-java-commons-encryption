@@ -17,6 +17,7 @@ import io.github.lc.oss.commons.encoding.Encodings;
 
 public abstract class AbstractAES implements Cipher {
     private static final String DELIMITER = "$";
+    private static final String DELIMITER_REGEX = "\\$";
     private static final String KEYSEC = "AES";
     private static final int IV_LENGTH = 12;
     private static final int TAG_LENGTH = 16;
@@ -40,7 +41,8 @@ public abstract class AbstractAES implements Cipher {
 
     @Override
     public String encrypt(String data, char[] password) {
-        return this.encrypt(data.getBytes(StandardCharsets.UTF_8), password, this.random(AbstractAES.DEFAULT_SALT_BYTES));
+        return this.encrypt(data.getBytes(StandardCharsets.UTF_8), password,
+                this.random(AbstractAES.DEFAULT_SALT_BYTES));
     }
 
     @Override
@@ -57,7 +59,8 @@ public abstract class AbstractAES implements Cipher {
     public String encrypt(byte[] data, char[] password, byte[] salt) {
         byte[] iv = this.generateIV();
         byte[] cipher = this.cipher(true, data, this.getKey(password, salt), iv);
-        return Encodings.Base64.encode(iv) + AbstractAES.DELIMITER + Encodings.Base64.encode(salt) + AbstractAES.DELIMITER + Encodings.Base64.encode(cipher);
+        return Encodings.Base64.encode(iv) + AbstractAES.DELIMITER + Encodings.Base64.encode(salt)
+                + AbstractAES.DELIMITER + Encodings.Base64.encode(cipher);
     }
 
     @Override
@@ -72,10 +75,10 @@ public abstract class AbstractAES implements Cipher {
 
     @Override
     public byte[] decrypt(String data, char[] password) {
-        String[] parts = data.split("\\$");
+        String[] parts = data.split(DELIMITER_REGEX);
 
-        return this.cipher(false, Encodings.Base64.decode(parts[2]), this.getKey(password, Encodings.Base64.decode(parts[1])),
-                Encodings.Base64.decode(parts[0]));
+        return this.cipher(false, Encodings.Base64.decode(parts[2]),
+                this.getKey(password, Encodings.Base64.decode(parts[1])), Encodings.Base64.decode(parts[0]));
     }
 
     @Override

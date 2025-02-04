@@ -10,9 +10,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.github.lc.oss.commons.encryption.Ciphers;
+import io.github.lc.oss.commons.testing.AbstractTest;
 import io.github.lc.oss.commons.util.IoTools;
 
-public class FileBackedCipherTest {
+public class FileBackedCipherTest extends AbstractTest {
     private static String tempDir = null;
 
     private String getTempDir() {
@@ -42,28 +43,28 @@ public class FileBackedCipherTest {
             new FileBackedCipher(null);
             Assertions.fail("Expected exception");
         } catch (RuntimeException ex) {
-            Assertions.assertEquals("KeyPath is required.", ex.getMessage());
+            Assertions.assertEquals("Key path is required.", ex.getMessage());
         }
 
         try {
             new FileBackedCipher("");
             Assertions.fail("Expected exception");
         } catch (RuntimeException ex) {
-            Assertions.assertEquals("KeyPath is required.", ex.getMessage());
+            Assertions.assertEquals("Key path is required.", ex.getMessage());
         }
 
         try {
             new FileBackedCipher(" ");
             Assertions.fail("Expected exception");
         } catch (RuntimeException ex) {
-            Assertions.assertEquals("KeyPath is required.", ex.getMessage());
+            Assertions.assertEquals("Key path is required.", ex.getMessage());
         }
 
         try {
             new FileBackedCipher(" \t \r \n \t ");
             Assertions.fail("Expected exception");
         } catch (RuntimeException ex) {
-            Assertions.assertEquals("KeyPath is required.", ex.getMessage());
+            Assertions.assertEquals("Key path is required.", ex.getMessage());
         }
     }
 
@@ -73,7 +74,8 @@ public class FileBackedCipherTest {
             new FileBackedCipher("/this/junk/better/not/exist/anywhere/on/a/real/file/system!");
             Assertions.fail("Expected exception");
         } catch (RuntimeException ex) {
-            Assertions.assertEquals("KeyPath does not point to a valid key file. File must contain at least 1 byte", ex.getMessage());
+            Assertions.assertEquals("Key path does not point to a valid key file. File must contain at least 1 byte.",
+                    ex.getMessage());
         }
     }
 
@@ -85,7 +87,8 @@ public class FileBackedCipherTest {
             new FileBackedCipher(this.getTempFile());
             Assertions.fail("Expected exception");
         } catch (RuntimeException ex) {
-            Assertions.assertEquals("KeyPath does not point to a valid key file. File must contain at least 1 byte", ex.getMessage());
+            Assertions.assertEquals("Key path does not point to a valid key file. File must contain at least 1 byte.",
+                    ex.getMessage());
         }
     }
 

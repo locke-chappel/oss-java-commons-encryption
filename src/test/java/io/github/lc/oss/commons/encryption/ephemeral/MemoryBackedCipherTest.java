@@ -7,8 +7,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.github.lc.oss.commons.encryption.Ciphers;
+import io.github.lc.oss.commons.testing.AbstractTest;
 
-public class MemoryBackedCipherTest {
+public class MemoryBackedCipherTest extends AbstractTest {
     @Test
     public void test_badKeySize() {
         Arrays.asList(-1, 0, 1, 7, 9, 15).forEach(i -> {
@@ -16,15 +17,15 @@ public class MemoryBackedCipherTest {
                 new MemoryBackedCipher(i);
                 Assertions.fail("Expected exception");
             } catch (RuntimeException ex) {
-                Assertions.assertEquals("KeySize must be a positive multiple of 8", ex.getMessage());
+                Assertions.assertEquals("Key size must be a positive multiple of 8", ex.getMessage());
             }
         });
     }
 
     @Test
     public void test_intance() {
-        MemoryBackedCipher cipher1 = new MemoryBackedCipher(8);
-        MemoryBackedCipher cipher2 = new MemoryBackedCipher(8);
+        MemoryBackedCipher cipher1 = new MemoryBackedCipher();
+        MemoryBackedCipher cipher2 = new MemoryBackedCipher();
 
         final String src = "test";
 
@@ -39,6 +40,28 @@ public class MemoryBackedCipherTest {
 
         try {
             cipher2.decrypt(encrypted, Ciphers.AES128);
+            Assertions.fail("Expected exception");
+        } catch (RuntimeException ex) {
+            Assertions.assertEquals("javax.crypto.AEADBadTagException: Tag mismatch", ex.getMessage());
+        }
+    }
+
+    @Test
+    public void test_rotateKey() {
+        MemoryBackedCipher cipher = new MemoryBackedCipher();
+
+        final String src = "test";
+
+        String encrypted = cipher.encrypt(src);
+        Assertions.assertNotEquals(src, encrypted);
+
+        String result = cipher.decryptString(encrypted);
+        Assertions.assertEquals(src, result);
+
+        cipher.rotateKey();
+
+        try {
+            cipher.decrypt(encrypted);
             Assertions.fail("Expected exception");
         } catch (RuntimeException ex) {
             Assertions.assertEquals("javax.crypto.AEADBadTagException: Tag mismatch", ex.getMessage());
