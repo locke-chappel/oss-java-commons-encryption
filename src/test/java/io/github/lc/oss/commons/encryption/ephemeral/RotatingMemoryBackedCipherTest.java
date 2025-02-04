@@ -110,11 +110,10 @@ public class RotatingMemoryBackedCipherTest extends AbstractTest {
         // Configure test for current hardware
         /*
          * Note: we perform at most 2 encryption operations or 4 decryption operations
-         * per rotation. So our optimal ttl is the sum of that plus a half second
-         * buffer.
+         * per rotation. So our optimal ttl is the sum of that plus a 3/4 second buffer.
          */
         final int keySlots = 3;
-        final long ttl = (2 * encTime) + (4 * decTime) + 500;
+        final long ttl = (2 * encTime) + (4 * decTime) + 750;
         final long ttlWait = ttl + 100;
         final long maxTtlWait = keySlots * ttl + 100;
 

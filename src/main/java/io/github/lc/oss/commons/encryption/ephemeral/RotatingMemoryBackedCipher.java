@@ -21,20 +21,16 @@ public class RotatingMemoryBackedCipher implements EphemeralCipher {
     private static final String DELIMITER = "$";
 
     private static class Key {
-        public static Key newKey(int keyBits, long ttl, long maxTtl) {
-            byte[] data = new byte[keyBits / 8];
-            SecureRandom random = new SecureRandom();
-            random.nextBytes(data);
-
-            return new Key(Encodings.Base64.encode(data).toCharArray(), ttl, maxTtl);
-        }
-
         private final long expires;
         private final long maxTtl;
         private char[] key;
 
-        public Key(char[] key, long ttl, long maxTtl) {
-            this.key = key;
+        public Key(int keyBits, long ttl, long maxTtl) {
+            byte[] data = new byte[keyBits / 8];
+            SecureRandom random = new SecureRandom();
+            random.nextBytes(data);
+
+            this.key = Encodings.Base64.encode(data).toCharArray();
             this.expires = System.currentTimeMillis() + ttl;
             this.maxTtl = System.currentTimeMillis() + maxTtl;
         }
@@ -95,7 +91,7 @@ public class RotatingMemoryBackedCipher implements EphemeralCipher {
             synchronized (this.keys) {
                 current = this.keys[this.keyIndex];
                 if (current == null) {
-                    current = Key.newKey(this.keyBits, this.keyTtl, this.maxTtl);
+                    current = new Key(this.keyBits, this.keyTtl, this.maxTtl);
                     this.keys[this.keyIndex] = current;
                 }
             }
@@ -103,12 +99,9 @@ public class RotatingMemoryBackedCipher implements EphemeralCipher {
             synchronized (this.keys) {
                 current = this.keys[this.keyIndex];
                 if (current.isExpired()) {
-                    current = Key.newKey(this.keyBits, this.keyTtl, this.maxTtl);
+                    current = new Key(this.keyBits, this.keyTtl, this.maxTtl);
 
-                    int i = this.keyIndex + 1;
-                    if (i >= this.keys.length) {
-                        i = 0;
-                    }
+                    int i = (this.keyIndex + 1) % this.keys.length;
 
                     this.keys[i] = current;
                     this.keyIndex = i;
