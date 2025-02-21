@@ -87,11 +87,11 @@ public class RotatingMemoryBackedCipherTest extends AbstractTest {
          * this test conducts a simple benchmark to ensure the keys live long enough to
          * operate properly but short enough to keep the test as fast as possible.
          * 
-         * Why? We need test the actual expiration of keys to prove that they rotate
+         * Why? We need to test the actual expiration of keys to prove that they rotate
          * properly but that means actually waiting for them to expire. If the test is
-         * ran on slower hardware (say an ARM node without AES extensions) then the we
-         * run into a scenario where the encryption operations make take "too long" for
-         * the key's lifetime. The benchmark helps us calculate the optimal values per
+         * ran on slower hardware (say an ARM node without AES extensions) then we run
+         * into a scenario where the encryption operations make take "too long" for the
+         * key's lifetime. The benchmark helps us calculate the optimal values per
          * hardware (one size does not fit all unless you want really slow :) ).
          */
 
@@ -110,12 +110,14 @@ public class RotatingMemoryBackedCipherTest extends AbstractTest {
         // Configure test for current hardware
         /*
          * Note: we perform at most 2 encryption operations or 4 decryption operations
-         * per rotation. So our optimal ttl is the sum of that plus a 3/4 second buffer.
+         * per rotation. So our optimal ttl is the sum of that plus a half second
+         * buffer.
          */
         final int keySlots = 3;
-        final long ttl = (2 * encTime) + (4 * decTime) + 750;
-        final long ttlWait = ttl + 100;
-        final long maxTtlWait = keySlots * ttl + 100;
+        final long ttl = (2 * encTime) + (4 * decTime) + 500;
+        final long ttlWait = ttl + 250;
+        final long maxTtlWait = keySlots * ttl + 250;
+        final long buffer = 100;
 
         // now the real test
         rmbc = new RotatingMemoryBackedCipher(512, keySlots, ttl);
@@ -131,11 +133,11 @@ public class RotatingMemoryBackedCipherTest extends AbstractTest {
         String cipher1 = rmbc.encrypt(data1, Ciphers.AES128);
         String cipher2 = rmbc.encrypt(data2, Ciphers.AES128);
         final long expires1 = this.getField("expires", keys[0]);
-        this.waitUntil(() -> System.currentTimeMillis() > expires1, ttlWait);
+        this.waitUntil(() -> System.currentTimeMillis() > expires1 + buffer, ttlWait);
 
         String cipher3 = rmbc.encrypt(data3, Ciphers.AES128);
         final long expires2 = this.getField("expires", keys[1]);
-        this.waitUntil(() -> System.currentTimeMillis() > expires2, ttlWait);
+        this.waitUntil(() -> System.currentTimeMillis() > expires2 + buffer, ttlWait);
 
         String cipher4 = rmbc.encrypt(data4, Ciphers.AES128);
 
@@ -145,7 +147,7 @@ public class RotatingMemoryBackedCipherTest extends AbstractTest {
         Assertions.assertEquals(data4, rmbc.decryptString(cipher4, Ciphers.AES128));
 
         final long expires3 = this.getField("expires", keys[2]);
-        this.waitUntil(() -> System.currentTimeMillis() > expires3, ttlWait);
+        this.waitUntil(() -> System.currentTimeMillis() > expires3 + buffer, ttlWait);
 
         String cipher5 = rmbc.encrypt(data5, Ciphers.AES128);
 
@@ -154,7 +156,7 @@ public class RotatingMemoryBackedCipherTest extends AbstractTest {
         Assertions.assertEquals(data5, rmbc.decryptString(cipher5, Ciphers.AES128));
 
         final long expires4 = this.getField("expires", keys[0]);
-        this.waitUntil(() -> System.currentTimeMillis() > expires4, ttlWait);
+        this.waitUntil(() -> System.currentTimeMillis() > expires4 + buffer, ttlWait);
 
         // Key has been rotated out (no matching hashcode)
         try {
@@ -173,7 +175,7 @@ public class RotatingMemoryBackedCipherTest extends AbstractTest {
 
         // Cause next key to expire
         final long ttl5 = this.getField("maxTtl", keys[1]);
-        this.waitUntil(() -> System.currentTimeMillis() > ttl5, maxTtlWait);
+        this.waitUntil(() -> System.currentTimeMillis() > ttl5 + buffer, maxTtlWait);
 
         // Key exists but has reached max ttl
         try {
@@ -281,14 +283,15 @@ public class RotatingMemoryBackedCipherTest extends AbstractTest {
         ThreadHelper h1 = new ThreadHelper(rmbc, 1);
         ThreadHelper h2 = new ThreadHelper(rmbc, 1);
 
+        // monitor keys
+        Object[] keys = this.getField("keys", rmbc);
+
         // create first key and let it expire
         rmbc.encrypt("data");
-        this.waitFor(1100);
-
-        Object[] keys = this.getField("keys", rmbc);
         Object firstKey = keys[0];
-        long firstExpires = this.getField("expires", firstKey);
-        Assertions.assertTrue(System.currentTimeMillis() > firstExpires);
+
+        final long firstExpires = this.getField("expires", firstKey);
+        this.waitUntil(() -> System.currentTimeMillis() > firstExpires + 100, 3500);
 
         // ready...
         Thread t1 = new Thread(h1);
