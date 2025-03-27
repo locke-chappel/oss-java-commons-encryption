@@ -320,4 +320,108 @@ public class RotatingMemoryBackedCipherTest extends AbstractTest {
         Assertions.assertSame(keys[1], key2);
         Assertions.assertNull(keys[2]);
     }
+
+    @Test
+    public void test_threading_onlyCreateOneKey() {
+        RotatingMemoryBackedCipher rmbc = new RotatingMemoryBackedCipher(8, 1, 1000);
+
+        // monitor keys
+        Object[] keys = this.getField("keys", rmbc);
+
+        ThreadHelper h1 = new ThreadHelper(rmbc, 0);
+        ThreadHelper h2 = new ThreadHelper(rmbc, 0);
+        ThreadHelper h3 = new ThreadHelper(rmbc, 0);
+        ThreadHelper h4 = new ThreadHelper(rmbc, 0);
+
+        // ready...
+        Thread t1 = new Thread(h1);
+        Thread t2 = new Thread(h2);
+        Thread t3 = new Thread(h3);
+        Thread t4 = new Thread(h4);
+
+        // set...
+        t1.start();
+        t2.start();
+        t3.start();
+        t4.start();
+
+        // go...
+        h1.go();
+        h2.go();
+        h3.go();
+        h4.go();
+
+        this.waitUntil(() -> h1.isComplete());
+        this.waitUntil(() -> h2.isComplete());
+        this.waitUntil(() -> h3.isComplete());
+        this.waitUntil(() -> h4.isComplete());
+
+        // h2-4 should have waited for h1 to complete and then seen the new key and not
+        // created another one
+        Object key1 = h1.key();
+        Object key2 = h2.key();
+        Object key3 = h3.key();
+        Object key4 = h4.key();
+
+        Assertions.assertSame(key1, key2);
+        Assertions.assertSame(key1, key3);
+        Assertions.assertSame(key1, key4);
+        Assertions.assertSame(keys[0], key1);
+    }
+
+    @Test
+    public void test_threading_expiredKey_onlyCreateOneKey() {
+        RotatingMemoryBackedCipher rmbc = new RotatingMemoryBackedCipher(8, 1, 1000);
+
+        ThreadHelper h1 = new ThreadHelper(rmbc, 0);
+        ThreadHelper h2 = new ThreadHelper(rmbc, 0);
+        ThreadHelper h3 = new ThreadHelper(rmbc, 0);
+        ThreadHelper h4 = new ThreadHelper(rmbc, 0);
+
+        // monitor keys
+        Object[] keys = this.getField("keys", rmbc);
+
+        // create first key and let it expire
+        rmbc.encrypt("data");
+        Object firstKey = keys[0];
+
+        final long firstExpires = this.getField("expires", firstKey);
+        this.waitUntil(() -> System.currentTimeMillis() > firstExpires + 100, 3500);
+
+        // ready...
+        Thread t1 = new Thread(h1);
+        Thread t2 = new Thread(h2);
+        Thread t3 = new Thread(h3);
+        Thread t4 = new Thread(h4);
+
+        // set...
+        t1.start();
+        t2.start();
+        t3.start();
+        t4.start();
+
+        // go...
+        h1.go();
+        h2.go();
+        h3.go();
+        h4.go();
+
+        this.waitUntil(() -> h1.isComplete());
+        this.waitUntil(() -> h2.isComplete());
+        this.waitUntil(() -> h3.isComplete());
+        this.waitUntil(() -> h4.isComplete());
+
+        // h2-4 should have waited for h1 to complete and then seen the new key and not
+        // created another one
+        Object key1 = h1.key();
+        Object key2 = h2.key();
+        Object key3 = h3.key();
+        Object key4 = h4.key();
+
+        Assertions.assertNotSame(firstKey, key1);
+        Assertions.assertSame(key1, key2);
+        Assertions.assertSame(key1, key3);
+        Assertions.assertSame(key1, key4);
+        Assertions.assertSame(keys[0], key1);
+    }
 }
